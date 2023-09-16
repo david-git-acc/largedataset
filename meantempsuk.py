@@ -6,6 +6,9 @@ from matplotlib.ticker import FuncFormatter
 
 redbluecmap = plt.get_cmap("seismic")
 
+# Size of one pixel in inches
+px = 1/96
+
 # Kill units from column names so it's easier to address
 def trim_units(string):
     bad = string.index("(") if "(" in string else len(string)+1
@@ -14,13 +17,16 @@ def trim_units(string):
 # Names of the 5 weather stations in a cherrypicked order so that our plots look more smooth
 stations = ["Leuchars" , "Leeming" , "Camborne" , "Hurn" , "Heathrow"]
 
-fig, (ax1,ax2,ax3) = plt.subplots(ncols=3,nrows=1 , subplot_kw={"projection" : "3d"})
+fig, (ax1,ax2,ax3) = plt.subplots(ncols=3,
+                                  nrows=1 , 
+                                  figsize=(1920*px, 1080*px), 
+                                  subplot_kw={"projection" : "3d"})
 
 # This function gets the data and modifies it into monthly data, also makes some qol changes to the data
 # Needed a function because sometimes this needs to be done in different contexts
 def get_modified_data(name, time):
         # Read in the excel sheet - the data begins the first 5 rows
-        data = pd.read_excel("weather_data.xls", sheet_name=f"{name} May-Oct {time}", skiprows=5)
+        data = pd.read_excel("weather_data.xls", sheet_name=f"{name} May-Oct {time}", skiprows=5, na_values = ["n/a"])
         
         # Kill the last 4 rows, they're not actually data
         data = data.drop(index=data.tail(4).index)
@@ -129,7 +135,7 @@ def plotit(time,ax, is_normal):
         ax.plot_surface(X,Y,f(X,Y), color="gold" , alpha=0.5)
 
     # For some reason it doesn't work unless I add one before the names
-    ax.set_yticklabels(["placeholder", "May","June","July","August","September","October"])
+    ax.set_yticklabels(["placeholder", "May","June","July","Aug.","Sept.","Oct."])
     ax.set_xticklabels(["placeholder"] +  stations)
 
     # ax2 is in the middle so I thought that's the best place to put the colourbar
@@ -177,6 +183,8 @@ plotit(2015,ax2,is_normal =True)
 plotit(2015,ax3, is_normal =False)
 
 plt.suptitle("Comparing mean temperatures across the UK in 1987 with 2015", fontsize=18)
+
+plt.savefig("weatherdiagram.png")
 
 plt.show()
 
