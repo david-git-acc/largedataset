@@ -1,7 +1,7 @@
 import numpy as np
 from matplotlib import pyplot as plt
 # from mpl_toolkits.mplot3d import Axes3D
-
+plt.style.use('dark_background')
 fig, ax1 = plt.subplots(subplot_kw={'projection': '3d'})
 
 # In a 3D bar chart, you're going to have some finite number of bars - let's say 10 bars.

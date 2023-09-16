@@ -1,9 +1,11 @@
 import pandas as pd
 import numpy as np
 from matplotlib import pyplot as plt
-from mpl_toolkits.mplot3d import Axes3D
 import matplotlib.colors as mcolors
-import datetime as dt
+from shared_functions import shorten_column_names
+
+# The purpose of this program is to compare different statistics about a place in the UK in a certain time to check for correlations
+# We'll be using a regression plane to try and identify a linear relationship
 
 # Weather station to check
 # Suitable stations are Hurn, Heathrow, Camborne, Leeming, Leuchars
@@ -12,11 +14,6 @@ time=1987
 
 # Pixel-to-inch ratio
 px =1/96
-
-# Kill units from column names so it's easier to address
-def trim_units(string):
-    bad = string.index("(") if "(" in string else len(string)+1
-    return string[0:bad-1]
 
 fig, ax= plt.subplots(ncols=1,
                       nrows=1, 
@@ -39,14 +36,8 @@ def plotit(ax, place):
     # The last 4 columns aren't data, just background info 
     stationdata = stationdata.drop(index= stationdata.tail(4).index)
 
-    # I want to remove the units off the names so it's easier to address them
-    old_column_names = list( stationdata.columns )
-    new_column_names = [ trim_units(name) for name in old_column_names  ]
-
-
-    # Renaming time
-    renaming = dict(zip(old_column_names, new_column_names))
-    stationdata = stationdata.rename(columns=renaming)
+    # Shorten the column names so it's less boring to refer to them
+    stationdata = shorten_column_names(stationdata)
 
     visibility = stationdata["Daily Mean Visibility"].values
     pressures = stationdata["Daily Mean Pressure"].values
@@ -103,7 +94,7 @@ def plotit(ax, place):
     plusorminus = lambda x : "+" if x > 0 else "-"
     
     # All this formatting to avoid seeing "+-" in the title
-    ax.set_title(f"regression: z = {a:.2f}x {plusorminus(b)} {abs(b):.2f}y {plusorminus(c)} {abs(c):.2f}")
+    ax.set_title(f"regression: z = {a:.3f}x {plusorminus(b)} {abs(b):.2f}y {plusorminus(c)} {abs(c):.2f}")
 
 
 plotit(ax, name)

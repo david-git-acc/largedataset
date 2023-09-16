@@ -3,6 +3,11 @@ import numpy as np
 from matplotlib import pyplot as plt
 import matplotlib.colors as mcolors
 from matplotlib.ticker import FuncFormatter
+from shared_functions import trim_units, shorten_column_names
+
+# The purpose of this program is to compare the temperatures and sunshine levels across the 5 UK weather stations in 1987 with those of 2015
+# We'll do this using 3d bar charts, we'll plot the monthly data from May-Oct in 1987, then in 2015, then check the temperature differences
+# in a third plot to see the extent of the changes
 
 redbluecmap = plt.get_cmap("seismic")
 
@@ -31,15 +36,8 @@ def get_modified_data(name, time):
         # Kill the last 4 rows, they're not actually data
         data = data.drop(index=data.tail(4).index)
    
-        # I want to remove the units off the names so it's easier to address them
-        old_column_names = list( data.columns )
-        new_column_names = [ trim_units(name) for name in old_column_names  ]
-
-        # Renaming time
-        renaming = dict(zip(old_column_names, new_column_names))
-
-        # Doing the renaming
-        data = data.rename(columns=renaming)
+        # Shorten the column names so it's less boring to refer to them
+        data = shorten_column_names(data)
 
         # Convert the date strings to datetimes so we can perform a monthly resampling
         data["Date"] = pd.to_datetime( data["Date"] )
