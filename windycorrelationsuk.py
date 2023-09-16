@@ -17,7 +17,7 @@ px =1/96
 
 fig, ax= plt.subplots(ncols=1,
                       nrows=1, 
-                      figsize=(1920*px, 1080*px),
+                      figsize=(1440*px, 1080*px),
                       subplot_kw={"projection":"3d"})
 
 # Function to plot this. I made it a function so it's easy to plot multiple graphs

@@ -14,12 +14,19 @@ redbluecmap = plt.get_cmap("seismic")
 # Size of one pixel in inches
 px = 1/96
 
+time = 2015
+
+# Kill units from column names so it's easier to address
+def trim_units(string):
+    bad = string.index("(") if "(" in string else len(string)+1
+    return string[0:bad-1]
+
 # Names of the 5 weather stations in a cherrypicked order so that our plots look more smooth
 stations = ["Leuchars" , "Leeming" , "Camborne" , "Hurn" , "Heathrow"]
 
-fig, (ax1,ax2,ax3) = plt.subplots(ncols=3,
+fig, ax = plt.subplots(ncols=1,
                                   nrows=1 , 
-                                  figsize=(1920*px, 1080*px), 
+                                  figsize=(1440*px, 1080*px), 
                                   subplot_kw={"projection" : "3d"})
 
 # This function gets the data and modifies it into monthly data, also makes some qol changes to the data
@@ -131,18 +138,16 @@ def plotit(time,ax, is_normal):
     ax.set_yticklabels(["placeholder", "May","June","July","Aug.","Sept.","Oct."])
     ax.set_xticklabels(["placeholder"] +  stations)
 
-    # ax2 is in the middle so I thought that's the best place to put the colourbar
-    if ax == ax2:
-        # Since the data was colour-normalised I need to set the sunshine ticks manually or it'll just go from 0-1 
-        # Round to stop stupid floating point errors
-        required_ticklabels = np.round( np.linspace(totalmonthlysunshine.min(), totalmonthlysunshine.max() , 6),
-                                       decimals=2)
-        bar = plt.colorbar(mappable=the_bars, 
-                           extend="both", 
-                           label = "Mean daily total sunshine (hrs)", 
-                           orientation="horizontal",
-                           fraction=0.046, pad=0.04) # Magic numbers, make the colourbar fit proportionally - got them from stackoverflow
-        bar.set_ticklabels(required_ticklabels)
+    # Since the data was colour-normalised I need to set the sunshine ticks manually or it'll just go from 0-1 
+    # Round to stop stupid floating point errors
+    required_ticklabels = np.round( np.linspace(totalmonthlysunshine.min(), totalmonthlysunshine.max() , 6),
+                                    decimals=2)
+    bar = plt.colorbar(mappable=the_bars, 
+                        extend="both", 
+                        label = "Mean daily total sunshine (hrs)", 
+                        orientation="horizontal",
+                        fraction=0.046, pad=0.04) # Magic numbers, make the colourbar fit proportionally - got them from stackoverflow
+    bar.set_ticklabels(required_ticklabels)
 
 
     ax.set_xlabel("Location")
@@ -168,16 +173,13 @@ def z_tick_formatter(x, pos):
         return f'{x:.1f}'
 
 z_formatter = FuncFormatter(z_tick_formatter)
-ax3.zaxis.set_major_formatter(z_formatter)
+ax.zaxis.set_major_formatter(z_formatter)
 
-# The third one is the temperature change graph
-plotit(1987,ax1,is_normal = True)
-plotit(2015,ax2,is_normal =True)
-plotit(2015,ax3, is_normal =False)
+plotit(time,ax,is_normal =True)
 
-plt.suptitle("Comparing mean temperatures across the UK in 1987 with 2015", fontsize=18)
+plt.suptitle(f"Comparing mean temperatures across the UK in {time}", fontsize=18)
 
-plt.savefig("weatherdiagram.png")
+plt.savefig("weatherdiagram_ONLY.png")
 
 plt.show()
 
