@@ -136,16 +136,17 @@ def plotit(time,ax, is_normal):
     ax.set_yticklabels(["placeholder", "May","June","July","Aug.","Sept.","Oct."])
     ax.set_xticklabels(["placeholder"] +  stations)
 
-    # Since the data was colour-normalised I need to set the sunshine ticks manually or it'll just go from 0-1 
-    # Round to stop stupid floating point errors
-    required_ticklabels = np.round( np.linspace(totalmonthlysunshine.min(), totalmonthlysunshine.max() , 6),
-                                    decimals=2)
-    bar = plt.colorbar(mappable=the_bars, 
-                        extend="both", 
-                        label = "Mean daily total sunshine (hrs)", 
-                        orientation="horizontal",
-                        fraction=0.046, pad=0.04) # Magic numbers, make the colourbar fit proportionally - got them from stackoverflow
-    bar.set_ticklabels(required_ticklabels)
+    if is_normal:
+        # Since the data was colour-normalised I need to set the sunshine ticks manually or it'll just go from 0-1 
+        # Round to stop stupid floating point errors
+        required_ticklabels = np.round( np.linspace(totalmonthlysunshine.min(), totalmonthlysunshine.max() , 6),
+                                        decimals=2)
+        bar = plt.colorbar(mappable=the_bars, 
+                            extend="both", 
+                            label = "Mean daily total sunshine (hrs)", 
+                            orientation="horizontal",
+                            fraction=0.046, pad=0.04) # Magic numbers, make the colourbar fit proportionally - got them from stackoverflow
+        bar.set_ticklabels(required_ticklabels)
 
 
     ax.set_xlabel("Location")
