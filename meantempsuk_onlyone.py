@@ -14,8 +14,6 @@ redbluecmap = plt.get_cmap("seismic")
 # Size of one pixel in inches
 px = 1/96
 
-time = 2015
-
 # Kill units from column names so it's easier to address
 def trim_units(string):
     bad = string.index("(") if "(" in string else len(string)+1
@@ -175,11 +173,13 @@ def z_tick_formatter(x, pos):
 z_formatter = FuncFormatter(z_tick_formatter)
 ax.zaxis.set_major_formatter(z_formatter)
 
-plotit(time,ax,is_normal =True)
+time = 2015
+
+plotit(time,ax,is_normal =False)
 
 plt.suptitle(f"Comparing mean temperatures across the UK in {time}", fontsize=18)
 
-plt.savefig("weatherdiagram_ONLY.png")
+plt.savefig("weatherdiagram_diff.png")
 
 plt.show()
 
