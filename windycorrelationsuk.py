@@ -45,7 +45,7 @@ def plotit(ax, place):
     cloudcover = stationdata["Daily Mean Total Cloud"].values   
 
     # This is for daily cloud cover
-    cloud_cmap=mcolors.LinearSegmentedColormap.from_list('rg',["navy","cyan"], N=256) 
+    cloud_cmap=mcolors.LinearSegmentedColormap.from_list('rg',["navy","cyan"], N=256).reversed()
     norm = mcolors.Normalize(vmin = cloudcover.min(), vmax = cloudcover.max())
 
     # Plotting the data
