@@ -68,8 +68,6 @@ def plotit(ax, place):
     # Had to use asfloat to prevent "same kind" casting error
     a,b,c = np.linalg.lstsq(A.astype('float'), windspeeds.astype('float'), rcond=False)[0]
     
-    print((a,b,c))
-    
     # Our linear regression plane
     regplane = lambda x,y: a*x + b*y + c
     
