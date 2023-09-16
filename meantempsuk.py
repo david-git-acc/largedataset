@@ -113,7 +113,7 @@ def plotit(time,ax, is_normal):
     # The plot itself, now that all the data has been initialised and collected
     if is_normal:
         norm = mcolors.Normalize(vmin=totalmonthlysunshine.min(), vmax=totalmonthlysunshine.max())
-        the_bars = ax.bar3d(x, y, z, d, d, totalmonthlytemp,color=my_cmap(norm( totalmonthlysunshine) ), cmap = my_cmap, alpha=0.75)
+        the_bars = ax.bar3d(x, y, z, d, d, totalmonthlytemp,color=my_cmap(norm( totalmonthlysunshine) ), cmap = my_cmap, alpha = 0.75   )
     else:
         # This norm is for the temperatures - I want 0 to be fully neutral so need to make the extrema symmetrical
         norm = mcolors.Normalize(vmin=-3, vmax=3)
@@ -132,7 +132,7 @@ def plotit(time,ax, is_normal):
         f = lambda x,y : x-x
         
         # Plot the plane. I chose gold as an intermediary between red (hot) and blue (cold)
-        ax.plot_surface(X,Y,f(X,Y), color="gold" , alpha=0.5)
+        zero_bound = ax.plot_surface(X,Y,f(X,Y), color="gold" , alpha=0.5)
 
     # For some reason it doesn't work unless I add one before the names
     ax.set_yticklabels(["placeholder", "May","June","July","Aug.","Sept.","Oct."])
