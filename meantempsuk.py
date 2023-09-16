@@ -11,20 +11,15 @@ def trim_units(string):
     bad = string.index("(") if "(" in string else len(string)+1
     return string[0:bad-1]
 
-# Get sign of number. Didn't want to import entire maths module for it
-def sgn(x):
-    if x == 0:
-        return 0
-    return abs(x) / x
-
-names = ["Heathrow" , "Hurn" , "Leeming" , "Leuchars" , "Camborne"]
+# Names of the 5 weather stations in a cherrypicked order so that our plots look more smooth
+names = ["Leuchars" , "Leeming" , "Camborne" , "Hurn" , "Heathrow"]
 
 fig, (ax1,ax2,ax3) = plt.subplots(ncols=3,nrows=1 , subplot_kw={"projection" : "3d"})
 
 # This function gets the data and modifies it into monthly data
 # Needed a function because sometimes this is done twice in the same time
 def get_modified_data(name, time):
-    # Read in the excel sheet - the data begins the first 5 rows
+        # Read in the excel sheet - the data begins the first 5 rows
         data = pd.read_excel("weather_data.xls", sheet_name=f"{name} May-Oct {time}", skiprows=5)
         
         # Kill the last 4 rows, they're not actually data
@@ -40,15 +35,14 @@ def get_modified_data(name, time):
         # Doing the renaming
         data = data.rename(columns=renaming)
 
-
         # Convert the date strings to datetimes so we can perform a monthly resampling
         data["Date"] = pd.to_datetime( data["Date"] )
 
         # Set the index to date for resampling
         data = data.set_index("Date")
 
-        # Perform resampling 
-        data = data.resample("M").mean()
+        # Perform resampling - monthly
+        data = data.resample("M").mean(numeric_only=False)
         
         return data
     
@@ -117,7 +111,7 @@ def plotit(time,ax, is_normal):
         X,Y = np.meshgrid(xs,ys)
         def f(x,y):
             return x-x 
-        ax.plot_surface(X,Y,f(X,Y), color="orange" , alpha=0.5)
+        ax.plot_surface(X,Y,f(X,Y), color="gold" , alpha=0.5)
 
     # For some reason it doesn't work unless I add one before the names
     ax.set_yticklabels(["placeholder", "May","June","July","August","September","October"])
@@ -128,7 +122,7 @@ def plotit(time,ax, is_normal):
                                        decimals=2)
         bar = plt.colorbar(mappable=the_bars, 
                            extend="both", 
-                           label = "Mean monthly total sunshine (hrs)", 
+                           label = "Mean daily total sunshine (hrs)", 
                            orientation="horizontal",
                            fraction=0.046, pad=0.04)
         bar.set_ticklabels(required_ticklabels)
@@ -142,7 +136,7 @@ def plotit(time,ax, is_normal):
         ax.set_title(f"{time}")
     else:
         ax.set_zlabel("Mean temperature change (°C)")
-        ax.set_title("Mean difference, 1987-2015")
+        ax.set_title("Temperature difference, 1987-2015")
 
 
 
